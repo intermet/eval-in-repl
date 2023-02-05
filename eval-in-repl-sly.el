@@ -56,7 +56,7 @@
 
 ;;; eir-eval-in-sly
 ;;;###autoload
-(defun eir-sly-repl-send-last-expression ()
+(defun eir-eval-in-sly ()
   (interactive)
   (let ((form (sly-current-defun)))
     (eir-repl-start "\\*sly-mrepl.*\\*" #'sly)
