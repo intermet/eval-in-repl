@@ -44,25 +44,28 @@
                    ;; fun-change-to-repl
                    (lambda () (sly-mrepl #'switch-to-buffer))
                    ;; fun-execute
-                   #'sly-mrepl-return)
+                   #'sly-mrepl-return
+                   )
   "Send expression to *sly* and have it evaluated.")
 
 
+(defun sly-current-defun ()
+  (interactive)
+  (apply #'buffer-substring-no-properties
+         (sly-region-for-defun-at-point)))
+
 ;;; eir-eval-in-sly
 ;;;###autoload
-(defun eir-eval-in-sly ()
-  "eval-in-repl for Sly."
+(defun eir-sly-repl-send-last-expression ()
   (interactive)
-  (eir-eval-in-repl-lisp
-   ;; repl-buffer-regexp
-   "\\*sly-mrepl.*\\*"
-   ;; fun-repl-start
-   #'sly
-   ;; fun-repl-send
-   #'eir-send-to-sly
-   ;; defun-string
-   "(defun "))
-;;
+  (let ((form (sly-current-defun)))
+    (eir-repl-start "\\*sly-mrepl.*\\*" #'sly)
+    (sly-mrepl #'switch-to-buffer)
+    (sly-mrepl--send-string form)
+    (previous-buffer)
+    (eir-next-code-line)
+  ))
+
 
 (provide 'eval-in-repl-sly)
 ;;; eval-in-repl-sly.el ends here
