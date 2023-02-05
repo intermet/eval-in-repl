@@ -58,13 +58,17 @@
 ;;;###autoload
 (defun eir-eval-in-sly ()
   (interactive)
-  (let ((form (sly-current-defun)))
+  (let ((form (sly-current-defun))
+        (script-window (selected-window)))
     (eir-repl-start "\\*sly-mrepl.*\\*" #'sly)
-    (sly-mrepl #'switch-to-buffer)
+    (sly-mrepl #'switch-to-buffer-other-window)
     (sly-mrepl--send-string form)
-    (previous-buffer)
+    (goto-char (point-max))
+    (select-window script-window)
     (eir-next-code-line)
   ))
+
+(+ 1 12)
 
 
 (provide 'eval-in-repl-sly)
